@@ -7,15 +7,15 @@ const Trip = require("./models/trip.model");
 const multer = require("multer");
 const subpath = "/public/assets/images/activities";
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     cb(null, path.join(__dirname, subpath));
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     cb(null, file.originalname);
-  }
+  },
 });
 var upload = multer({
-  storage
+  storage,
 });
 
 mongoose.set("debug", true);
@@ -23,7 +23,8 @@ mongoose
   .connect(
     "mongodb+srv://jean:123@cluster0-urpjt.gcp.mongodb.net/dymatrip?retryWrites=true&w=majority",
     {
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     }
   )
   .then(() => console.log("connexion ok !"));
@@ -67,7 +68,7 @@ app.put("/api/trip", async (req, res) => {
   try {
     const body = req.body;
     const trip = await Trip.findOneAndUpdate({ _id: body._id }, body, {
-      new: true
+      new: true,
     }).exec();
     res.json(trip);
   } catch (e) {
@@ -84,7 +85,7 @@ app.post("/api/city/:cityId/activity", async (req, res) => {
       { _id: cityId },
       { $push: { activities: activity } },
       {
-        new: true
+        new: true,
       }
     ).exec();
     res.json(city);
@@ -101,7 +102,7 @@ app.get(
     const { cityId, activityName } = req.params;
     const city = await City.findById(cityId).exec();
     const index = city.activities.findIndex(
-      activity => activity.name === activityName
+      (activity) => activity.name === activityName
     );
     index == -1 ? res.json(null) : res.json("L’activité existe déjà");
   }

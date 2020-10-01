@@ -20,7 +20,8 @@ class _ActivityFormImagePickerState extends State<ActivityFormImagePicker> {
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      _deviceImage = await ImagePicker.pickImage(source: source);
+      PickedFile pickedFile = await ImagePicker().getImage(source: source);
+      _deviceImage = File(pickedFile.path);
       if (_deviceImage != null) {
         final url = await Provider.of<CityProvider>(context, listen: false)
             .uploadImage(_deviceImage);
